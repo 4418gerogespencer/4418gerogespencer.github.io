@@ -80,15 +80,18 @@
 
 
       function googleSignIn() {
-          var provider = new firebase.auth.GoogleAuthProvider();
+    var provider = new firebase.auth.GoogleAuthProvider();
 
-          firebase.auth().signInWithPopup(provider)
-            .then((result) => {
-              alert('Google Sign-In successful!');
-            }).catch((error) => {
-              alert('Error signing in with Google: ' + error.message);
-            });
-      }
+    firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+            alert('Google Sign-In successful!');
+            // Add this line to redirect after successful sign-in
+            window.location.href = 'main.html'; // Replace 'main.html' with the path to your main page
+        }).catch((error) => {
+            alert('Error signing in with Google: ' + error.message);
+        });
+}
+
 
     </script>
 </head>
