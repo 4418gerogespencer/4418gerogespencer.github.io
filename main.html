@@ -107,93 +107,88 @@
               measurementId: "G-Q26C1LE2Q7"
            };
 
-              // Initialize Firebase
-      
-              const app = initializeApp(firebaseConfig);
-              const db = getFirestore(app);
-              const auth = getAuth(app);
+                      // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-      // Function to create a new user with an initial balance
-         async function signUp() {
-             const email = document.getElementsByName('uname')[0].value;
-             const password = document.getElementsByName('psw')[0].value;
-
-             try {
-                 const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-                 await db.collection('users').doc(userCredential.user.uid).set({
-                     balance: 100000
-                 });
-                 alert('Account created successfully with $100,000 balance!');
-             } catch (error) {
-                 alert('Error creating account: ' + error.message);
-             }
-         }
-
-         // Function to log in and retrieve the user's balance
-         async function login() {
-             const email = document.getElementsByName('uname')[0].value;
-             const password = document.getElementsByName('psw')[0].value;
-
-             try {
-                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-                 const doc = await db.collection('users').doc(userCredential.user.uid).get();
-                 if (doc.exists) {
-                     document.getElementById('balance').textContent = `$${doc.data().balance}`;
-                     alert('Login successful!');
-                 } else {
-                     console.log("No such document!");
-                 }
-             } catch (error) {
-                 alert('Invalid username or password!');
-             }
-         }
-         // Function to place a bet and update the user's balance
-         async function placeBet() {
-             const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
-             const userId = firebase.auth().currentUser.uid; // Get the current user's ID
-
-             // Reference to the user's document
-             const userRef = db.collection('users').doc(userId);
-
-             try {
-    await db.runTransaction(async (transaction) => {
-        const userDoc = await transaction.get(userRef);
-        if (!userDoc.exists) {
-            throw "User does not exist!";
+        // Function to create a new user with an initial balance
+        async function signUp(email, password) {
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await setDoc(doc(db, 'users', userCredential.user.uid), {
+                    balance: 100000
+                });
+                alert('Account created successfully with $100,000 balance!');
+            } catch (error) {
+                alert('Error creating account: ' + error.message);
+            }
         }
 
-        const userData = userDoc.data();
-        if (userData.balance < betAmount) {
-            throw "Insufficient funds!";
+        // Function to log in and retrieve the user's balance
+        async function login(email, password) {
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+                if (userDoc.exists()) {
+                    document.getElementById('balance').textContent = `$${userDoc.data().balance}`;
+                    alert('Login successful!');
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                alert('Invalid username or password!');
+            }
         }
 
-        // Deduct the bet amount from the user's balance
-        const newBalance = userData.balance - betAmount;
-        transaction.update(userRef, { balance: newBalance });
+        // Function to place a bet and update the user's balance
+        async function placeBet(betAmount) {
+            const userId = auth.currentUser.uid; // Get the current user's ID
 
-        // Create a reference for a new bet document
-        const betRef = db.collection('bets').doc();
+            // Reference to the user's document
+            const userRef = doc(db, 'users', userId);
 
-        // Set the bet details in the new bet document
-        betRef.set({
-            userId: userId,
-            betAmount: betAmount,
-            // Include other bet details here
-            placedAt: serverTimestamp() // Use the imported serverTimestamp function
+            try {
+                await db.runTransaction(async (transaction) => {
+                    const userDoc = await transaction.get(userRef);
+                    if (!userDoc.exists()) {
+                        throw "User does not exist!";
+                    }
+
+                    const userData = userDoc.data();
+                    if (userData.balance < betAmount) {
+                        throw "Insufficient funds!";
+                    }
+
+                    // Deduct the bet amount from the user's balance
+                    const newBalance = userData.balance - betAmount;
+                    transaction.update(userRef, { balance: newBalance });
+
+                    // Create a reference for a new bet document
+                    const betRef = doc(collection(db, 'bets'));
+
+                    // Set the bet details in the new bet document
+                    await setDoc(betRef, {
+                        userId: userId,
+                        betAmount: betAmount,
+                        // Include other bet details here
+                        placedAt: serverTimestamp() // Use the imported serverTimestamp function
+                    });
+                });
+
+                alert('Bet placed successfully!');
+            } catch (error) {
+                alert('Failed to place bet: ' + error);
+            }
+        }
+
+        // Add this function call to your form's submit event
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+            placeBet(betAmount);
         });
-    });
-
-    alert('Bet placed successfully!');
-} catch (error) {
-    alert('Failed to place bet: ' + error);
-}
-
-         // Add this function call to your form's submit event
-         document.querySelector('form').addEventListener('submit', function(event) {
-             event.preventDefault(); // Prevent the default form submission
-             placeBet();
-         });
-
-       </script>
-      </body>
+    </script>
+</head>
+<body>
       </html>
