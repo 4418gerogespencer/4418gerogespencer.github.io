@@ -116,7 +116,37 @@
                       // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        console.log(typeof db.runTransaction); // Should log 'function'
+        // Log the 'db' object to check if it's defined
+console.log('db object:', db);
+
+// Check if 'runTransaction' exists on the 'db' object
+console.log('runTransaction' in db ? 'runTransaction exists' : 'runTransaction does not exist');
+
+// Log the type of 'runTransaction' to verify it's a function
+console.log('Type of db.runTransaction:', typeof db.runTransaction);
+
+// If 'runTransaction' is a function, log a message
+if (typeof db.runTransaction === 'function') {
+  console.log('runTransaction is a function on db');
+} else {
+  console.log('runTransaction is NOT a function on db');
+}
+
+// Log the Firebase SDK version
+console.log('Firebase SDK version:', firebase.SDK_VERSION);
+
+// Attempt to call 'runTransaction' if it exists
+if ('runTransaction' in db) {
+  try {
+    db.runTransaction(() => {});
+    console.log('runTransaction call was successful');
+  } catch (error) {
+    console.error('Error calling runTransaction:', error);
+  }
+} else {
+  console.error('runTransaction method is not available on db');
+}
+
         const auth = getAuth(app);
 
         // Function to create a new user with an initial balance
