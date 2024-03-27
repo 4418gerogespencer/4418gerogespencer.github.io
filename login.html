@@ -1,0 +1,109 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 300px;
+            padding: 16px;
+            background-color: white;
+            margin: 0 auto;
+            margin-top: 100px;
+            border: 1px solid black;
+            border-radius: 4px;
+        }
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyASccDZI88CsOteCtjaeIgR3XNYiotV01I",
+        authDomain: "gamblingproject-531a2.firebaseapp.com",
+        projectId: "gamblingproject-531a2",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      function signUp() {
+        var email = document.getElementsByName('uname')[0].value;
+        var password = document.getElementsByName('psw')[0].value;
+
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            alert('Account created successfully!');
+          })
+          .catch((error) => {
+            alert('Error creating account: ' + error.message);
+          });
+      }
+
+      function login() {
+    var email = document.getElementsByName('uname')[0].value;
+    var password = document.getElementsByName('psw')[0].value;
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Redirect to the main page upon successful login
+        window.location.href = 'main.html'; // Replace 'main.html' with the path to your main page
+      })
+      .catch((error) => {
+        alert('Invalid username or password!');
+      });
+}
+
+
+      function googleSignIn() {
+          var provider = new firebase.auth.GoogleAuthProvider();
+
+          firebase.auth().signInWithPopup(provider)
+            .then((result) => {
+              alert('Google Sign-In successful!');
+            }).catch((error) => {
+              alert('Error signing in with Google: ' + error.message);
+            });
+      }
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <label for="uname"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="uname" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+
+        <button type="button" onclick="login()">Login</button>
+        <button type="button" onclick="signUp()">Sign Up</button>
+        <button type="button" onclick="googleSignIn()">Sign In with Google</button>
+
+    </div>
+</body>
+</html>
