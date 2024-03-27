@@ -180,8 +180,7 @@
                     await setDoc(betRef, {
                         userId: userId,
                         betAmount: betAmount,
-                        // Include other bet details here
-                        placedAt: serverTimestamp() // Use the imported serverTimestamp function
+                
                     });
                 });
 
