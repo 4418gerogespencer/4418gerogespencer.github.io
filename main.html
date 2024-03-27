@@ -92,7 +92,7 @@
             
               // Import the functions you need from the SDKs you need
               import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-              import { getFirestore, collection, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+              import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
               import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
               // Your web app's Firebase configuration
@@ -156,36 +156,37 @@
              const userRef = db.collection('users').doc(userId);
 
              try {
-                 await db.runTransaction(async (transaction) => {
-                     const userDoc = await transaction.get(userRef);
-                     if (!userDoc.exists) {
-                         throw "User does not exist!";
-                     }
+    await db.runTransaction(async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        if (!userDoc.exists) {
+            throw "User does not exist!";
+        }
 
-                     const userData = userDoc.data();
-                     if (userData.balance < betAmount) {
-                         throw "Insufficient funds!";
-                     }
+        const userData = userDoc.data();
+        if (userData.balance < betAmount) {
+            throw "Insufficient funds!";
+        }
 
-                     // Deduct the bet amount from the user's balance
-                     const newBalance = userData.balance - betAmount;
-                     transaction.update(userRef, { balance: newBalance });
+        // Deduct the bet amount from the user's balance
+        const newBalance = userData.balance - betAmount;
+        transaction.update(userRef, { balance: newBalance });
 
-                     // Add the bet details to the 'bets' collection
-                     const betRef = db.collection('bets').doc();
-                     transaction.set(betRef, {
-                         userId: userId,
-                         betAmount: betAmount,
-                         // Include other bet details here
-                         placedAt: firebase.firestore.FieldValue.serverTimestamp()
-                     });
-                 });
+        // Create a reference for a new bet document
+        const betRef = db.collection('bets').doc();
 
-                 alert('Bet placed successfully!');
-             } catch (error) {
-                 alert('Failed to place bet: ' + error);
-             }
-         }
+        // Set the bet details in the new bet document
+        betRef.set({
+            userId: userId,
+            betAmount: betAmount,
+            // Include other bet details here
+            placedAt: serverTimestamp() // Use the imported serverTimestamp function
+        });
+    });
+
+    alert('Bet placed successfully!');
+} catch (error) {
+    alert('Failed to place bet: ' + error);
+}
 
          // Add this function call to your form's submit event
          document.querySelector('form').addEventListener('submit', function(event) {
