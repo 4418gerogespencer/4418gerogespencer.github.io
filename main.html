@@ -96,11 +96,8 @@
               import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
               import { runTransaction } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-              // Make sure you're using Firestore
-              const db = getFirestore(app);
 
-// Check if the runTransaction method is available
-               console.log(typeof db.runTransaction); // Should log 'function'
+               
 
 
 
@@ -119,6 +116,7 @@
                       // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        console.log(typeof db.runTransaction); // Should log 'function'
         const auth = getAuth(app);
 
         // Function to create a new user with an initial balance
