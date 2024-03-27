@@ -96,6 +96,13 @@
               import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
               import { runTransaction } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
+              // Make sure you're using Firestore
+              const db = getFirestore(app);
+
+// Check if the runTransaction method is available
+               console.log(typeof db.runTransaction); // Should log 'function'
+
+
 
               // Your web app's Firebase configuration
                 // Your web app's Firebase configuration
