@@ -115,21 +115,6 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 
-            
-            // Deduct the bet amount from the user's balance
-            const newBalance = userData.balance - betAmount;
-            console.log('New balance after bet:', newBalance); // Log the new balance
-
-            transaction.update(userRef, { balance: newBalance }); // Update the user's balance
-            console.log('Updated user balance in transaction.'); // Log the balance update
-        });
-        console.log('Transaction completed successfully.'); // Log the successful completion of the transaction
-    } catch (error) {
-        console.error('Failed to place bet:', error); // Log any errors encountered
-    }
-}
-
-
 
 
         // Function to create a new user with an initial balance
