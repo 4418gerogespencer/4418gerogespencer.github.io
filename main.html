@@ -120,6 +120,7 @@ const auth = getAuth(app);
 
         // Function to create a new user with an initial balance
         async function signUp(email, password) {
+    console.log('Attempting to sign up...'); // Log the attempt to sign up
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         console.log('User signed up with UID:', userCredential.user.uid); // Log the user's UID
@@ -138,6 +139,7 @@ const auth = getAuth(app);
         alert('Error creating account: ' + error.message);
     }
 }
+
 
 
 
