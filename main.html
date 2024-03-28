@@ -100,13 +100,12 @@
 <!-- Add Firestore SDK -->
               <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
 
-
-               
-
+             
 
 
-              // Your web app's Firebase configuration
-                // Your web app's Firebase configuration
+
+
+
               const firebaseConfig = {
               apiKey: "AIzaSyASccDZI88CsOteCtjaeIgR3XNYiotV01I",
               authDomain: "gamblingproject-531a2.firebaseapp.com",
@@ -117,14 +116,14 @@
               measurementId: "G-Q26C1LE2Q7"
            };
 
-                      // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        // Log Firebase app initialization
-console.log('Firebase app initialized:', app ? 'Yes' : 'No');
+              const app = initializeApp(firebaseConfig);
+              const db = getFirestore(app);
+              const auth = getAuth(app); // Make sure this line comes before you use 'auth'
+             // Log Firebase app initialization
+             console.log('Firebase app initialized:', app ? 'Yes' : 'No');
 
-// Log Firestore instance
-console.log('Firestore instance:', db ? 'Yes' : 'No');
+            // Log Firestore instance
+             console.log('Firestore instance:', db ? 'Yes' : 'No');
 
 // Log Firestore instance details
 if (db) {
@@ -140,7 +139,6 @@ console.log('Current user:', currentUser ? currentUser.uid : 'No user logged in'
 console.log('runTransaction method available:', db.runTransaction ? 'Yes' : 'No');
 
 
-        const auth = getAuth(app);
 
         // Function to create a new user with an initial balance
         async function signUp(email, password) {
