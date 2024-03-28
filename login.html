@@ -42,6 +42,7 @@
     </style>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
     <script>
       var firebaseConfig = {
         apiKey: "AIzaSyASccDZI88CsOteCtjaeIgR3XNYiotV01I",
@@ -55,23 +56,28 @@
     var email = document.getElementsByName('uname')[0].value;
     var password = document.getElementsByName('psw')[0].value;
 
+    console.log('Attempting to sign up with email:', email); // Debug log
+
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        // User is signed up successfully
+        console.log('User signed up:', userCredential.user.uid); // Debug log
+
         // Now create a document in Firestore for the user with the initial balance
-        return firebase.firestore().collection('users').doc(userCredential.user.uid).set({
+        var db = firebase.firestore();
+        return db.collection('users').doc(userCredential.user.uid).set({
           balance: 100000 // Set the initial balance to 100,000
         });
       })
       .then(() => {
-        // Document created successfully
+        console.log('Document created with initial balance'); // Debug log
         alert('Account created successfully with $100,000 balance!');
       })
       .catch((error) => {
-        // Handle errors
+        console.error('Error during sign up:', error); // Debug log
         alert('Error creating account: ' + error.message);
       });
 }
+
 
 
       function login() {
