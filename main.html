@@ -122,14 +122,21 @@ const auth = getAuth(app);
         async function signUp(email, password) {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
+        console.log('User signed up with UID:', userCredential.user.uid); // Log the user's UID
+
+        const userDocRef = doc(db, 'users', userCredential.user.uid);
+        await setDoc(userDocRef, {
             balance: 100000 // Set the initial balance to 100,000
         });
+        console.log('User document created with initial balance.'); // Log the document creation
+
         alert('Account created successfully with $100,000 balance!');
     } catch (error) {
+        console.error('Error creating account:', error); // Log any errors
         alert('Error creating account: ' + error.message);
     }
 }
+
 
 
         // Function to log in and retrieve the user's balance
