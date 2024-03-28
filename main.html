@@ -115,40 +115,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 
-            async function placeBet(betAmount) {
-    console.log('Attempting to place a bet...'); // Log attempt to place a bet
-
-    const userId = auth.currentUser ? auth.currentUser.uid : null; // Get the current user's ID
-    console.log('Current User ID:', userId); // Log the current user's ID
-
-    if (!userId) {
-        console.error('No user logged in. Cannot place a bet.');
-        return;
-    }
-
-    // Reference to the user's document
-    const userRef = doc(db, 'users', userId);
-    console.log('User document reference:', userRef); // Log the user document reference
-
-    try {
-        console.log('Starting transaction...'); // Log the start of the transaction
-        await runTransaction(db, async (transaction) => {
-            console.log('Inside transaction...'); // Log inside the transaction
-
-            const userDoc = await transaction.get(userRef);
-            console.log('Retrieved user document:', userDoc.exists()); // Log if the user document exists
-
-            if (!userDoc.exists()) {
-                throw "User does not exist!";
-            }
-
-            const userData = userDoc.data();
-            console.log('Current balance:', userData.balance); // Log the current balance
-
-            if (userData.balance < betAmount) {
-                throw "Insufficient funds!";
-            }
-
+            
             // Deduct the bet amount from the user's balance
             const newBalance = userData.balance - betAmount;
             console.log('New balance after bet:', newBalance); // Log the new balance
@@ -195,44 +162,56 @@ const auth = getAuth(app);
         }
 
         // Function to place a bet and update the user's balance
-        async function placeBet(betAmount) {
-            const userId = auth.currentUser.uid; // Get the current user's ID
+       // Function to place a bet and update the user's balance
+async function placeBet(betAmount) {
+    console.log('Attempting to place a bet...'); // Log attempt to place a bet
 
-            // Reference to the user's document
-            const userRef = doc(db, 'users', userId);
+    const userId = auth.currentUser ? auth.currentUser.uid : null; // Get the current user's ID
+    console.log('Current User ID:', userId); // Log the current user's ID
 
-            try {
-                await db.runTransaction(async (transaction) => {
-                    const userDoc = await transaction.get(userRef);
-                    if (!userDoc.exists()) {
-                        throw "User does not exist!";
-                    }
+    if (!userId) {
+        console.error('No user logged in. Cannot place a bet.');
+        return;
+    }
 
-                    const userData = userDoc.data();
-                    if (userData.balance < betAmount) {
-                        throw "Insufficient funds!";
-                    }
+    // Reference to the user's document
+    const userRef = doc(db, 'users', userId);
+    console.log('User document reference:', userRef); // Log the user document reference
 
-                    // Deduct the bet amount from the user's balance
-                    const newBalance = userData.balance - betAmount;
-                    transaction.update(userRef, { balance: newBalance });
+    try {
+        console.log('Starting transaction...'); // Log the start of the transaction
+        await runTransaction(db, async (transaction) => {
+            console.log('Inside transaction...'); // Log inside the transaction
 
-                    // Create a reference for a new bet document
-                    const betRef = doc(collection(db, 'bets'));
+            const userDoc = await transaction.get(userRef);
+            console.log('Retrieved user document:', userDoc.exists()); // Log if the user document exists
 
-                    // Set the bet details in the new bet document
-                    await setDoc(betRef, {
-                        userId: userId,
-                        betAmount: betAmount,
-                
-                    });
-                });
-
-                alert('Bet placed successfully!');
-            } catch (error) {
-                alert('Failed to place bet: ' + error);
+            if (!userDoc.exists()) {
+                throw new Error("User does not exist!");
             }
-        }
+
+            const userData = userDoc.data();
+            console.log('Current balance:', userData.balance); // Log the current balance
+
+            if (userData.balance < betAmount) {
+                throw new Error("Insufficient funds!");
+            }
+
+            // Deduct the bet amount from the user's balance
+            const newBalance = userData.balance - betAmount;
+            console.log('New balance after bet:', newBalance); // Log the new balance
+
+            // Update the user's balance in the transaction
+            transaction.update(userRef, { balance: newBalance });
+            console.log('Updated user balance in transaction.'); // Log the balance update
+        });
+        console.log('Transaction completed successfully.'); // Log the successful completion of the transaction
+    } catch (error) {
+        console.error('Failed to place bet:', error); // Log any errors encountered
+    }
+}
+
+
 
         // Add this function call to your form's submit event
         document.querySelector('form').addEventListener('submit', function(event) {
