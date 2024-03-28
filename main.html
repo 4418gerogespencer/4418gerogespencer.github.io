@@ -91,30 +91,31 @@
       <script type="module">
             
               // Import the functions you need from the SDKs you need
-              import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-              import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-              import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
-              import { runTransaction } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-              <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+              // Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+          
+// The runTransaction function is part of Firestore and does not need to be imported separately
 
-<!-- Add Firestore SDK -->
-              <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyASccDZI88CsOteCtjaeIgR3XNYiotV01I",
+  authDomain: "gamblingproject-531a2.firebaseapp.com",
+  projectId: "gamblingproject-531a2",
+  storageBucket: "gamblingproject-531a2.appspot.com",
+  messagingSenderId: "979010319245",
+  appId: "1:979010319245:web:c79d1d04abe721b5df03c4",
+  measurementId: "G-Q26C1LE2Q7"
+};
 
-             
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
+// Now you can use the Firebase services as needed in your code
 
-
-
-
-              const firebaseConfig = {
-              apiKey: "AIzaSyASccDZI88CsOteCtjaeIgR3XNYiotV01I",
-              authDomain: "gamblingproject-531a2.firebaseapp.com",
-              projectId: "gamblingproject-531a2",
-              storageBucket: "gamblingproject-531a2.appspot.com",
-              messagingSenderId: "979010319245",
-              appId: "1:979010319245:web:c79d1d04abe721b5df03c4",
-              measurementId: "G-Q26C1LE2Q7"
-           };
 
               const app = initializeApp(firebaseConfig);
               const db = getFirestore(app);
