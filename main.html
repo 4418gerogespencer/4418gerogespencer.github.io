@@ -120,16 +120,17 @@ const auth = getAuth(app);
 
         // Function to create a new user with an initial balance
         async function signUp(email, password) {
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, 'users', userCredential.user.uid), {
-                    balance: 100000
-                });
-                alert('Account created successfully with $100,000 balance!');
-            } catch (error) {
-                alert('Error creating account: ' + error.message);
-            }
-        }
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+            balance: 100000 // Set the initial balance to 100,000
+        });
+        alert('Account created successfully with $100,000 balance!');
+    } catch (error) {
+        alert('Error creating account: ' + error.message);
+    }
+}
+
 
         // Function to log in and retrieve the user's balance
         async function login(email, password) {
