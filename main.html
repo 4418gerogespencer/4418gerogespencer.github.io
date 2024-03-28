@@ -115,24 +115,53 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 
-             // Log Firebase app initialization
-             console.log('Firebase app initialized:', app ? 'Yes' : 'No');
+            async function placeBet(betAmount) {
+    console.log('Attempting to place a bet...'); // Log attempt to place a bet
 
-            // Log Firestore instance
-             console.log('Firestore instance:', db ? 'Yes' : 'No');
+    const userId = auth.currentUser ? auth.currentUser.uid : null; // Get the current user's ID
+    console.log('Current User ID:', userId); // Log the current user's ID
 
-// Log Firestore instance details
-if (db) {
-  console.log('Firestore Project ID:', db._databaseId.projectId);
-  console.log('Firestore Database Location:', db._databaseId.database);
+    if (!userId) {
+        console.error('No user logged in. Cannot place a bet.');
+        return;
+    }
+
+    // Reference to the user's document
+    const userRef = doc(db, 'users', userId);
+    console.log('User document reference:', userRef); // Log the user document reference
+
+    try {
+        console.log('Starting transaction...'); // Log the start of the transaction
+        await runTransaction(db, async (transaction) => {
+            console.log('Inside transaction...'); // Log inside the transaction
+
+            const userDoc = await transaction.get(userRef);
+            console.log('Retrieved user document:', userDoc.exists()); // Log if the user document exists
+
+            if (!userDoc.exists()) {
+                throw "User does not exist!";
+            }
+
+            const userData = userDoc.data();
+            console.log('Current balance:', userData.balance); // Log the current balance
+
+            if (userData.balance < betAmount) {
+                throw "Insufficient funds!";
+            }
+
+            // Deduct the bet amount from the user's balance
+            const newBalance = userData.balance - betAmount;
+            console.log('New balance after bet:', newBalance); // Log the new balance
+
+            transaction.update(userRef, { balance: newBalance }); // Update the user's balance
+            console.log('Updated user balance in transaction.'); // Log the balance update
+        });
+        console.log('Transaction completed successfully.'); // Log the successful completion of the transaction
+    } catch (error) {
+        console.error('Failed to place bet:', error); // Log any errors encountered
+    }
 }
 
-// Log current user (if any)
-const currentUser = auth.currentUser;
-console.log('Current user:', currentUser ? currentUser.uid : 'No user logged in');
-
-// Check if the runTransaction method exists on the Firestore instance
-console.log('runTransaction method available:', db.runTransaction ? 'Yes' : 'No');
 
 
 
