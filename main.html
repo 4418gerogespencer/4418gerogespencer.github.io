@@ -271,19 +271,6 @@ async function createFinishedDocument() {
     }
 }
 
-// Function to create the finished document
-async function createFinishedDocument() {
-    // Get a reference to the document
-    const docRef = doc(db, "finished", "yourDocumentId");
-
-    // Set the default value
-    try {
-        await setDoc(docRef, { value: 0 });
-        console.log("Document created with default value.");
-    } catch (error) {
-        console.error("Error creating document:", error);
-    }
-}
 
 // Call the function to create the document
 createFinishedDocument();
