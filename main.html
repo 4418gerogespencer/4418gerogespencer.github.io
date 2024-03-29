@@ -332,6 +332,32 @@ setupBetListener("talk", updateTalkBets);
   }
 }
 
+          // Get a reference to the Firestore database
+const db = firebase.firestore();
+
+// Reference to the "finished" document
+const finishedDocRef = db.collection("yourCollectionName").doc("finished");
+
+// Listen for real-time updates to the "finished" document
+finishedDocRef.onSnapshot((doc) => {
+    if (doc.exists) {
+        const finishedValue = doc.data().value;
+        if (finishedValue === 1) {
+            // The betting event is considered over
+            // Proceed with comparing user bets and determining outcomes
+            console.log("Betting event is over!");
+            // Call your functions to handle the outcome
+            // (e.g., compareUserBetsAndActualCounts(), updateBalance(), etc.)
+        } else {
+            console.log("Betting event is still ongoing.");
+        }
+    } else {
+        console.log("Document does not exist.");
+    }
+}, (error) => {
+    console.error("Error listening to changes:", error);
+});
+
 
 
         // Add this function call to your form's submit event
