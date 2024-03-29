@@ -387,15 +387,6 @@ if (actualBetCounts) {
 
 
 
-// Example usage
-const actualBetCounts = await getActualBetCounts();
-if (actualBetCounts) {
-    console.log('Actual bet counts:', actualBetCounts);
-    // Now you can compare these counts with the user's bet counts
-} else {
-    console.log('Failed to fetch actual bet counts.');
-}
-
 // Assuming you have retrieved actualBetCounts and userBetCounts
 for (const betType in actualBetCounts) {
     const actualCount = actualBetCounts[betType];
