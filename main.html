@@ -82,23 +82,27 @@
     if (classroomChecked) combinedOdds *= adjustedOdds(classroomOdds, classroomCount);
     if (talkChecked) combinedOdds *= adjustedOdds(talkOdds, talkCount);
 
-    // Display the bets
-    const betsContainer = document.getElementById('betsContainer');
-    betsContainer.innerHTML = ''; // Clear previous bets
-    let betDetailsText = 'Placed bets on: ';
-    let bets = [];
+    // Format the bet details into one line
+    let betDetails = [];
     if (whiteboardChecked && whiteboardCount > 0) {
-        bets.push(`Whiteboard ${whiteboardCount} times`);
+        betDetails.push(`Bet on Whiteboard: ${whiteboardCount}X`);
     }
     if (classroomChecked && classroomCount > 0) {
-        bets.push(`Classroom ${classroomCount} times`);
+        betDetails.push(`Bet on Classroom: ${classroomCount}X`);
     }
     if (talkChecked && talkCount > 0) {
-        bets.push(`Talk ${talkCount} times`);
+        betDetails.push(`Bet on Talk: ${talkCount}X`);
     }
-    betDetailsText += bets.join(', ') + `; Stake: $${betAmount}; Combined Odds: ${combinedOdds.toFixed(2)}`;
+
+    // Convert combined odds to fractional format
+    let numerator = Math.floor(combinedOdds);
+    let denominator = Math.floor(1 / (combinedOdds - numerator));
+
+    // Display the bet details
+    const betsContainer = document.getElementById('betsContainer');
+    betsContainer.innerHTML = ''; // Clear previous bets
     const betDetail = document.createElement('p');
-    betDetail.textContent = betDetailsText;
+    betDetail.textContent = `${betDetails.join(', ')}, Stake: $${betAmount} Odds: ${numerator}/${denominator}`;
     betsContainer.appendChild(betDetail);
 
     // Place the bet (your existing function)
@@ -109,6 +113,7 @@
 function adjustedOdds(odds, count) {
     return Math.pow(odds, count);
 }
+
 
       </script>
   
