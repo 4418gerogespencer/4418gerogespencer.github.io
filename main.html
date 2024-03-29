@@ -382,6 +382,28 @@ if (actualBetCounts) {
 }
 
 
+function getUserBetCounts() {
+    // Get the bet counts from the form inputs
+    const whiteboardCount = parseInt(document.getElementById('whiteboardCount').value) || 0;
+    const classroomCount = parseInt(document.getElementById('classroomCount').value) || 0;
+    const talkCount = parseInt(document.getElementById('talkCount').value) || 0;
+
+    // Return the bet counts as an object
+    return {
+        whiteboard: whiteboardCount,
+        classroom: classroomCount,
+        talk: talkCount
+    };
+}
+
+document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the user bet counts
+            const userBetCounts = getUserBetCounts();
+            console.log('User bet counts:', userBetCounts);
+
+
 
 // Assuming you have retrieved actualBetCounts and userBetCounts
 for (const betType in actualBetCounts) {
