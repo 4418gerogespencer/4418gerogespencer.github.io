@@ -130,7 +130,7 @@
     firebase.auth().signInWithPopup(provider)
         .then((result) => {
             // Redirect first before showing the alert
-            window.location.href = 'main.html'; // Replace 'main.html' with the path to your main page
+            //window.location.href = 'main.html'; 
             alert('Google Sign-In successful!');
         }).catch((error) => {
             alert('Error signing in with Google: ' + error.message);
