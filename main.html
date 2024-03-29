@@ -67,6 +67,15 @@
         document.getElementById("talkCount").addEventListener("input", calculateWinnings);
         document.getElementById("betAmount").addEventListener("input", calculateWinnings);
 
+
+        function gcd(a, b) {
+    if (!b) {
+        return a;
+    }
+    return gcd(b, a % b);
+}
+
+
         // Function to calculate potential winnings
         function calculateWinnings() {
             const monitorsCount = parseInt(document.getElementById("whiteboardCount").value) || 0;
