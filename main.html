@@ -391,8 +391,7 @@ if (actualBetCounts) {
 for (const betType in actualBetCounts) {
     const actualCount = actualBetCounts[betType];
     const userCount = userBetCounts[betType];
-    const totalWinnings = /* Retrieve the total winnings from previous code */;
-
+    const totalWinnings = totalWinnings ;
     if (userCount >= actualCount) {
         // User wins! Credit the winnings.
         console.log(`User's ${betType} count matches or exceeds actual count. Crediting winnings.`);
