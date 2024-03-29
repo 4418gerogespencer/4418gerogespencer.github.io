@@ -129,11 +129,16 @@ document.querySelector('form').addEventListener('submit', function(event) {
         return;
     }
 
-    // Place the bet and update the bet summary
     const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
-    placeBet(betAmount); // You will need to define the placeBet function
-    updateBetSummary();
+    placeBet(betAmount).then(() => {
+        // Call updateBetSummary only after the bet has been successfully placed
+        updateBetSummary();
+    }).catch((error) => {
+        console.error('Failed to place bet:', error);
+        betCount--; // Decrement the bet count if the bet was not successfully placed
+    });
 });
+
 
       </script>
   
