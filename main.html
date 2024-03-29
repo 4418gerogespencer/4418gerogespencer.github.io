@@ -267,6 +267,23 @@ function updateTalkBets(count) {
     // Implementation depends on your website setup
 }
 
+          //this will see if the event is finished
+async function createFinishedDocument() {
+    // Get a reference to the document
+    const docRef = doc(db, "finished", "yourDocumentId");
+
+    // Set the default value
+    try {
+        await setDoc(docRef, { value: 0 });
+        console.log("Document created with default value.");
+    } catch (error) {
+        console.error("Error creating document:", error);
+    }
+}
+
+// Call the function to create the document
+createFinishedDocument();
+
 // Define a setup function for each bet
 function setupBetListener(betName, updateFunction) {
     // Get a reference to the document
