@@ -92,10 +92,11 @@
             
               // Import the functions you need from the SDKs you need
               // Import the functions you need from the SDKs you need
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
-import { runTransaction } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
           
 // The runTransaction function is part of Firestore and does not need to be imported separately
 
@@ -116,51 +117,6 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 
-
-
-        // Function to create a new user with an initial balance
-        async function signUp(email, password) {
-    console.log('Attempting to sign up...'); // Log the attempt to sign up
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log('User signed up with UID:', userCredential.user.uid); // Log the user's UID
-
-        const userDocRef = doc(db, 'users', userCredential.user.uid);
-        console.log('Attempting to create user document with initial balance...'); // Log the attempt to create the document
-
-        await setDoc(userDocRef, {
-            balance: 100000 // Set the initial balance to 100,000
-        });
-        console.log('User document created with initial balance.'); // Log the successful creation of the document
-
-        alert('Account created successfully with $100,000 balance!');
-    } catch (error) {
-        console.error('Error creating account:', error); // Log any errors that occur
-        alert('Error creating account: ' + error.message);
-    }
-}
-
-
-
-
-
-        // Function to log in and retrieve the user's balance
-        async function login(email, password) {
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-                if (userDoc.exists()) {
-                    document.getElementById('balance').textContent = `$${userDoc.data().balance}`;
-                    alert('Login successful!');
-                } else {
-                    console.log("No such document!");
-                }
-            } catch (error) {
-                alert('Invalid username or password!');
-            }
-        }
-
-        // Function to place a bet and update the user's balance
        // Function to place a bet and update the user's balance
 async function placeBet(betAmount) {
     console.log('Attempting to place a bet...'); // Log attempt to place a bet
@@ -208,6 +164,21 @@ async function placeBet(betAmount) {
     } catch (error) {
         console.error('Failed to place bet:', error); // Log any errors encountered
     }
+}
+
+          async function updateDisplayedBalance() {
+  if (auth.currentUser) {
+    const userDocRef = doc(db, 'users', auth.currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      document.getElementById('balance').textContent = `$${userData.balance}`;
+    } else {
+      console.log("User document does not exist.");
+    }
+  } else {
+    console.log("No user is currently logged in.");
+  }
 }
 
 
