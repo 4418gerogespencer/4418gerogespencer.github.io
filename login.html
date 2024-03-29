@@ -53,30 +53,30 @@
       firebase.initializeApp(firebaseConfig);
 
       function signUp() {
-    var email = document.getElementsByName('uname')[0].value;
-    var password = document.getElementsByName('psw')[0].value;
+  var email = document.getElementsByName('uname')[0].value;
+  var password = document.getElementsByName('psw')[0].value;
 
-    console.log('Attempting to sign up with email:', email); // Debug log
+  console.log('Attempting to sign up with email:', email);
 
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        console.log('User signed up:', userCredential.user.uid); // Debug log
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      console.log('User signed up:', userCredential.user.uid);
 
-        // Now create a document in Firestore for the user with the initial balance
-        var db = firebase.firestore();
-        return db.collection('users').doc(userCredential.user.uid).set({
-          balance: 100000 // Set the initial balance to 100,000
-        });
-      })
-      .then(() => {
-        console.log('Document created with initial balance'); // Debug log
-        alert('Account created successfully with $100,000 balance!');
-      })
-      .catch((error) => {
-        console.error('Error during sign up:', error); // Debug log
-        alert('Error creating account: ' + error.message);
+      var db = firebase.firestore();
+      return db.collection('users').doc(userCredential.user.uid).set({
+        balance: 100000
       });
+    })
+    .then(() => {
+      console.log('Document created with initial balance');
+      alert('Account created successfully with $100,000 balance!');
+    })
+    .catch((error) => {
+      console.error('Error during sign up:', error);
+      alert('Error creating account: ' + error.message);
+    });
 }
+
 
 
 
@@ -125,17 +125,38 @@
 
 
       function googleSignIn() {
-    var provider = new firebase.auth.GoogleAuthProvider();
+  var provider = new firebase.auth.GoogleAuthProvider();
 
-    firebase.auth().signInWithPopup(provider)
-        .then((result) => {
-            // Redirect first before showing the alert
-            //window.location.href = 'main.html'; 
-            alert('Google Sign-In successful!');
-        }).catch((error) => {
-            alert('Error signing in with Google: ' + error.message);
-        });
+  firebase.auth().signInWithPopup(provider)
+    .then((result) => {
+      console.log('Google Sign-In successful:', result.user.uid);
+
+      var db = firebase.firestore();
+      var userDocRef = db.collection('users').doc(result.user.uid);
+
+      // Check if the user document exists and create or update it
+      return userDocRef.get().then((doc) => {
+        if (doc.exists) {
+          console.log('User document exists, checking last login date');
+          // ... logic to check last login date and update balance if necessary
+        } else {
+          console.log('User document does not exist, creating with initial balance');
+          return userDocRef.set({
+            balance: 100000, // Set the initial balance to 100,000
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp() // Set the last login timestamp
+          });
+        }
+      }).then(() => {
+        // Redirect to the main page after handling the user document
+        window.location.href = 'main.html';
+      });
+    })
+    .catch((error) => {
+      console.error('Error signing in with Google:', error);
+      alert('Error signing in with Google: ' + error.message);
+    });
 }
+
 
 
 
