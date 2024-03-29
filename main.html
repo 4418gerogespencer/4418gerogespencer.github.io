@@ -284,6 +284,40 @@ async function createFinishedDocument() {
 // Call the function to create the document
 createFinishedDocument();
 
+// Assuming you have already set up Firestore and authenticated the user
+
+// Reference to the "finisheddocument" document
+const finishedDocumentRef = doc(db, 'finisheddocument', 'yourDocumentId');
+
+// Set the default value (event ongoing) if the document doesn't exist
+try {
+    await setDoc(finishedDocumentRef, { value: 0 });
+    console.log('Document created with default value (event ongoing).');
+} catch (error) {
+    console.error('Error creating document:', error);
+}
+
+// Listen for real-time updates to the "finisheddocument"
+onSnapshot(finishedDocumentRef, (doc) => {
+    if (doc.exists) {
+        const eventState = doc.data().value;
+        if (eventState === 1) {
+            // Event is finished; prevent further bets or take other actions
+            console.log('The event is over. No more bets allowed.');
+            // You can disable the form submission, display a message to users, etc.
+        } else {
+            // Event is still ongoing
+            console.log('The event is still ongoing.');
+            // You can enable the form submission, update UI, etc.
+        }
+    } else {
+        console.log('No such document for "finisheddocument".');
+    }
+}, (error) => {
+    console.error('Error fetching "finisheddocument":', error);
+});
+
+
 // Define a setup function for each bet
 function setupBetListener(betName, updateFunction) {
     // Get a reference to the document
