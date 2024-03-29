@@ -54,38 +54,87 @@
             <input type="submit" value="Place Bet">
             <p id="totalWinnings">Total Potential Winnings: $0.00</p>
         </fieldset>
+        <!-- Add a div to display the bet summary -->
+<div id="betSummary" style="display:none;">
+    <h2>Bet Summary</h2>
+    <p id="selectedBets"></p>
+    <p>Overall Odds: <span id="overallOdds">0</span></p>
+    <p>Potential Winnings: <span id="displayWinnings">0</span></p>
+    <p>Stake Amount: <span id="displayStake">0</span></p>
+</div>
+
     </form>
 
     <script>
-        // Event listeners for calculating winnings
-        document.getElementById("whiteboardCount").addEventListener("input", calculateWinnings);
-        document.getElementById("classroomCount").addEventListener("input", calculateWinnings);
-        document.getElementById("talkCount").addEventListener("input", calculateWinnings);
-        document.getElementById("betAmount").addEventListener("input", calculateWinnings);
+       // Event listeners for calculating winnings
+document.getElementById("whiteboardCount").addEventListener("input", updateBetSummary);
+document.getElementById("classroomCount").addEventListener("input", updateBetSummary);
+document.getElementById("talkCount").addEventListener("input", updateBetSummary);
+document.getElementById("betAmount").addEventListener("input", updateBetSummary);
 
-        // Function to calculate potential winnings
-        function calculateWinnings() {
-            const monitorsCount = parseInt(document.getElementById("whiteboardCount").value) || 0;
-            const classroomCount = parseInt(document.getElementById("classroomCount").value) || 0;
-            const talkCount = parseInt(document.getElementById("talkCount").value) || 0;
-            const betAmount = parseFloat(document.getElementById("betAmount").value) || 0;
+// Function to update the bet summary
+function updateBetSummary() {
+    const whiteboardCount = parseInt(document.getElementById("whiteboardCount").value) || 0;
+    const classroomCount = parseInt(document.getElementById("classroomCount").value) || 0;
+    const talkCount = parseInt(document.getElementById("talkCount").value) || 0;
+    const betAmount = parseFloat(document.getElementById("betAmount").value) || 0;
 
-            const MonitorOdds = 9 / 8;
-            const classroomOdds = 3 / 2;
-            const talkOdds = 100 / 99;
+    const whiteboardOdds = 9 / 8;
+    const classroomOdds = 3 / 2;
+    const talkOdds = 100 / 99;
 
-            const combinedOdds = adjustedOdds(MonitorOdds, monitorsCount) * 
-                                 adjustedOdds(classroomOdds, classroomCount) * 
-                                 adjustedOdds(talkOdds, talkCount);
+    const combinedOdds = calculateCombinedOdds(whiteboardOdds, whiteboardCount, classroomOdds, classroomCount, talkOdds, talkCount);
+    const potentialWinnings = betAmount * combinedOdds;
 
-            const totalWinnings = betAmount * combinedOdds;
-            document.getElementById("totalWinnings").textContent = `Total Potential Winnings: $${totalWinnings.toFixed(2)}`;
-        }
+    // Update the bet summary display
+    document.getElementById("selectedBets").textContent = `Selected Bets: ${formatSelectedBets(whiteboardCount, classroomCount, talkCount)}`;
+    document.getElementById("overallOdds").textContent = `Overall Odds: ${combinedOdds.toFixed(2)}`;
+    document.getElementById("displayWinnings").textContent = `Potential Winnings: $${potentialWinnings.toFixed(2)}`;
+    document.getElementById("displayStake").textContent = `Stake Amount: $${betAmount.toFixed(2)}`;
+}
 
-        // Function to adjust odds based on count
-        function adjustedOdds(odds, count) {
-            return Math.pow(odds, count);
-        }
+// Function to calculate combined odds
+function calculateCombinedOdds(whiteboardOdds, whiteboardCount, classroomOdds, classroomCount, talkOdds, talkCount) {
+    return adjustedOdds(whiteboardOdds, whiteboardCount) *
+           adjustedOdds(classroomOdds, classroomCount) *
+           adjustedOdds(talkOdds, talkCount);
+}
+
+// Function to format the selected bets for display
+function formatSelectedBets(whiteboardCount, classroomCount, talkCount) {
+    const bets = [];
+    if (whiteboardCount > 0) bets.push(`Turning off the whiteboard x${whiteboardCount}`);
+    if (classroomCount > 0) bets.push(`Threatening to be kicked out of the classroom x${classroomCount}`);
+    if (talkCount > 0) bets.push(`Talk to V=UAT x${talkCount}`);
+    return bets.join(', ');
+}
+
+// Function to adjust odds based on count
+function adjustedOdds(odds, count) {
+    return Math.pow(odds, count);
+}
+
+// Counter for the number of bets placed
+let betCount = 0;
+
+// Add event listener to the form's submit event
+document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Increment the bet count and check if the maximum number of bets is reached
+    betCount++;
+    if (betCount > 5) {
+        alert('You have reached the maximum number of bets allowed.');
+        betCount--; // Decrement the bet count as this bet is not placed
+        return;
+    }
+
+    // Place the bet and update the bet summary
+    const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+    placeBet(betAmount); // You will need to define the placeBet function
+    updateBetSummary();
+});
+
       </script>
   
       <script type="module">
