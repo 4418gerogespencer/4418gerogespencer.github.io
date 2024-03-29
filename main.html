@@ -99,11 +99,13 @@
         function adjustedOdds(odds, count) {
             return Math.pow(odds, count);
         }
+
+
       </script>
   
       <script type="module">
 
-       document.querySelector('form').addEventListener('submit', function(event) {
+    document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent the default form submission
 
     // Get the bet details
@@ -137,7 +139,6 @@
     combinedOddsDenominator /= divisor;
 
     // Construct the bet details string
-    // Construct the bet details string
 const bets = [];
 if (whiteboardChecked && whiteboardCount > 0) {
     bets.push(`Bet on Whiteboard: ${whiteboardCount}X`);
@@ -162,14 +163,11 @@ betsContainer.appendChild(betDetail);
     placeBet(betAmount);
 });
 
-            
               // Import the functions you need from the SDKs you need
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc, runTransaction, onSnapshot } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
-
-
 
           
 // The runTransaction function is part of Firestore and does not need to be imported separately
