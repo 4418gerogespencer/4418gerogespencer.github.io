@@ -386,30 +386,6 @@ if (actualBetCounts) {
 }
 
 
-          // Assuming you have already set up Firestore and authenticated the user
-
-// Reference to the "bets" collection
-const betsCollectionRef = collection(db, 'bets');
-
-// Retrieve the actual bet counts
-async function getActualBetCounts() {
-    try {
-        const querySnapshot = await getDocs(betsCollectionRef);
-        const actualCounts = {};
-
-        querySnapshot.forEach((doc) => {
-            const betType = doc.id; // Bet type (e.g., "classroom," "talk," "whiteboard")
-            const actualCount = doc.data().count; // Actual bet count
-
-            actualCounts[betType] = actualCount;
-        });
-
-        return actualCounts;
-    } catch (error) {
-        console.error('Error fetching actual bet counts:', error);
-        return null;
-    }
-}
 
 // Example usage
 const actualBetCounts = await getActualBetCounts();
