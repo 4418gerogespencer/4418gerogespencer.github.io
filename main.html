@@ -103,34 +103,49 @@
 
     // Get the bet details
     const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
-    const whiteboardChecked = document.getElementById('whiteboard').checked;
-    const classroomChecked = document.getElementById('classroom').checked;
-    const talkChecked = document.getElementById('talk').checked;
-    const whiteboardCount = parseInt(document.getElementById('whiteboardCount').value) || 0;
-    const classroomCount = parseInt(document.getElementById('classroomCount').value) || 0;
-    const talkCount = parseInt(document.getElementById('talkCount').value) || 0;
+    const bets = [];
+    const odds = {
+        whiteboard: 9 / 8,
+        classroom: 3 / 2,
+        talk: 100 / 99
+    };
+
+    // Check each bet and add to the bets array if selected
+    if (document.getElementById('whiteboard').checked) {
+        const count = parseInt(document.getElementById('whiteboardCount').value) || 0;
+        if (count > 0) {
+            bets.push(`Whiteboard: ${count} times, Odds: ${odds.whiteboard}, Stake: $${betAmount}`);
+        }
+    }
+    if (document.getElementById('classroom').checked) {
+        const count = parseInt(document.getElementById('classroomCount').value) || 0;
+        if (count > 0) {
+            bets.push(`Classroom: ${count} times, Odds: ${odds.classroom}, Stake: $${betAmount}`);
+        }
+    }
+    if (document.getElementById('talk').checked) {
+        const count = parseInt(document.getElementById('talkCount').value) || 0;
+        if (count > 0) {
+            bets.push(`Talk: ${count} times, Odds: ${odds.talk}, Stake: $${betAmount}`);
+        }
+    }
+
+    // Check if more than 5 bets are being placed
+    if (bets.length > 5) {
+        alert('You can only place up to 5 bets at one time.');
+        return;
+    }
 
     // Place the bet (your existing function)
     placeBet(betAmount);
 
     // Display the bets
     const betsContainer = document.getElementById('betsContainer'); // Make sure you have a div with this id in your HTML
-    if (whiteboardChecked && whiteboardCount > 0) {
-        const betDetail = document.createElement('p');
-        betDetail.textContent = `Bet on Whiteboard: ${whiteboardCount} times, Stake: $${betAmount}`;
-        betsContainer.appendChild(betDetail);
-    }
-    if (classroomChecked && classroomCount > 0) {
-        const betDetail = document.createElement('p');
-        betDetail.textContent = `Bet on Classroom: ${classroomCount} times, Stake: $${betAmount}`;
-        betsContainer.appendChild(betDetail);
-    }
-    if (talkChecked && talkCount > 0) {
-        const betDetail = document.createElement('p');
-        betDetail.textContent = `Bet on Talk: ${talkCount} times, Stake: $${betAmount}`;
-        betsContainer.appendChild(betDetail);
-    }
+    const betDetails = document.createElement('p');
+    betDetails.textContent = bets.join(' | '); // Join all bets with a separator
+    betsContainer.appendChild(betDetails);
 });
+
 
             
               // Import the functions you need from the SDKs you need
