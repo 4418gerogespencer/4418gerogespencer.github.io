@@ -106,26 +106,49 @@
     const classroomCount = parseInt(document.getElementById('classroomCount').value) || 0;
     const talkCount = parseInt(document.getElementById('talkCount').value) || 0;
 
-    // Place the bet (your existing function)
-    placeBet(betAmount);
+    // Calculate combined odds and format them
+    let combinedOddsNumerator = 1;
+    let combinedOddsDenominator = 1;
+    if (whiteboardChecked) {
+        combinedOddsNumerator *= Math.pow(9, whiteboardCount);
+        combinedOddsDenominator *= Math.pow(8, whiteboardCount);
+    }
+    if (classroomChecked) {
+        combinedOddsNumerator *= Math.pow(3, classroomCount);
+        combinedOddsDenominator *= Math.pow(2, classroomCount);
+    }
+    if (talkChecked) {
+        combinedOddsNumerator *= Math.pow(100, talkCount);
+        combinedOddsDenominator *= Math.pow(99, talkCount);
+    }
 
-    // Display the bets
-    const betsContainer = document.getElementById('betsContainer'); // Make sure you have a div with this id in your HTML
+    // Simplify the odds
+    const divisor = gcd(combinedOddsNumerator, combinedOddsDenominator);
+    combinedOddsNumerator /= divisor;
+    combinedOddsDenominator /= divisor;
+
+    // Construct the bet details string
+    const bets = [];
     if (whiteboardChecked && whiteboardCount > 0) {
-        const betDetail = document.createElement('p');
-        betDetail.textContent = `Bet on Whiteboard: ${whiteboardCount} times, Stake: $${betAmount}`;
-        betsContainer.appendChild(betDetail);
+        bets.push(`Bet on Whiteboard: ${whiteboardCount}X`);
     }
     if (classroomChecked && classroomCount > 0) {
-        const betDetail = document.createElement('p');
-        betDetail.textContent = `Bet on Classroom: ${classroomCount} times, Stake: $${betAmount}`;
-        betsContainer.appendChild(betDetail);
+        bets.push(`Bet on Classroom: ${classroomCount}X`);
     }
     if (talkChecked && talkCount > 0) {
-        const betDetail = document.createElement('p');
-        betDetail.textContent = `Bet on Talk: ${talkCount} times, Stake: $${betAmount}`;
-        betsContainer.appendChild(betDetail);
+        bets.push(`Bet on Talk: ${talkCount}X`);
     }
+    const betDetailsText = `Placed bets on: ${bets.join(', ')}; Stake: $${betAmount}; Combined Odds: ${combinedOddsNumerator}/${combinedOddsDenominator}`;
+
+    // Display the bet details
+    const betsContainer = document.getElementById('betsContainer');
+    betsContainer.innerHTML = ''; // Clear previous bets
+    const betDetail = document.createElement('p');
+    betDetail.textContent = betDetailsText;
+    betsContainer.appendChild(betDetail);
+
+    // Place the bet (your existing function)
+    placeBet(betAmount);
 });
 
             
