@@ -334,14 +334,83 @@ setupBetListener("talk", updateTalkBets);
   }
 }
 
+          // Get a reference to the finished document
+const finishedDocRef = doc(db, "finished", "yourDocumentId");
 
+// Listen for real-time updates
+onSnapshot(finishedDocRef, async (doc) => {
+    if (doc.exists() && doc.data().value === 1) {
+        console.log("Betting event is over.");
+
+        // Get the final counts
+        const whiteboardCount = await getFinalCount("whiteboard");
+        const classroomCount = await getFinalCount("classroom");
+        const talkCount = await getFinalCount("talk");
+
+        // Get the user's bets
+        const userBets = await getUserBets();
+
+        // Compare the counts to the bets and update the user's balance
+        if (whiteboardCount >= userBets.whiteboard) {
+            await updateUserBalance(userBets.whiteboard);
+        }
+        if (classroomCount >= userBets.classroom) {
+            await updateUserBalance(userBets.classroom);
+        }
+        if (talkCount >= userBets.talk) {
+            await updateUserBalance(userBets.talk);
+        }
+
+        console.log("Bets have been settled.");
+    }
+}, (error) => {
+    console.log("Failed to fetch document:", error);
+});
+
+async function getFinalCount(betName) {
+    // Get a reference to the bet document
+    const docRef = doc(db, "bets", betName);
+
+    // Fetch the document
+    const docSnap = await getDoc(docRef);
+
+    // Return the final count
+    return docSnap.exists() ? docSnap.data().count : 0;
+}
+
+async function getUserBets() {
+    // Fetch the user's bets from Firestore
+    // This depends on how your user bets are stored
+    // For this example, we'll return a dummy object
+    return {
+        whiteboard: 5,
+        classroom: 3,
+        talk: 7
+    };
+}
+
+async function updateUserBalance(winnings) {
+    // Get a reference to the user's document
+    const userDocRef = doc(db, "users", "userId");
+
+    // Fetch the user's current balance
+    const userDoc = await getDoc(userDocRef);
+    const currentBalance = userDoc.exists() ? userDoc.data().balance : 0;
+
+    // Update the user's balance
+    const newBalance = currentBalance + winnings;
+    await updateDoc(userDocRef, { balance: newBalance });
+}
 
         // Add this function call to your form's submit event
         document.querySelector('form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the default form submission
             const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
             placeBet(betAmount);
+
+            
         });
+
      </script>
 </head>
 <body>
