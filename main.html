@@ -105,6 +105,10 @@
     betDetail.textContent = `${betDetails.join(', ')}, Stake: $${betAmount} Odds: ${numerator}/${denominator}`;
     betsContainer.appendChild(betDetail);
 
+    const totalWinnings = betAmount * combinedOdds;
+
+// Update the displayed potential winnings
+document.getElementById("totalWinnings").textContent = `Total Potential Winnings: $${totalWinnings.toFixed(2)}`;
     // Place the bet (your existing function)
     placeBet(betAmount);
 });
