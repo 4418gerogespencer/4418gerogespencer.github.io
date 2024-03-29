@@ -386,6 +386,60 @@ if (actualBetCounts) {
 }
 
 
+          // Assuming you have already set up Firestore and authenticated the user
+
+// Reference to the "bets" collection
+const betsCollectionRef = collection(db, 'bets');
+
+// Retrieve the actual bet counts
+async function getActualBetCounts() {
+    try {
+        const querySnapshot = await getDocs(betsCollectionRef);
+        const actualCounts = {};
+
+        querySnapshot.forEach((doc) => {
+            const betType = doc.id; // Bet type (e.g., "classroom," "talk," "whiteboard")
+            const actualCount = doc.data().count; // Actual bet count
+
+            actualCounts[betType] = actualCount;
+        });
+
+        return actualCounts;
+    } catch (error) {
+        console.error('Error fetching actual bet counts:', error);
+        return null;
+    }
+}
+
+// Example usage
+const actualBetCounts = await getActualBetCounts();
+if (actualBetCounts) {
+    console.log('Actual bet counts:', actualBetCounts);
+    // Now you can compare these counts with the user's bet counts
+} else {
+    console.log('Failed to fetch actual bet counts.');
+}
+
+// Assuming you have retrieved actualBetCounts and userBetCounts
+for (const betType in actualBetCounts) {
+    const actualCount = actualBetCounts[betType];
+    const userCount = userBetCounts[betType];
+    const totalWinnings = /* Retrieve the total winnings from previous code */;
+
+    if (userCount >= actualCount) {
+        // User wins! Credit the winnings.
+        console.log(`User's ${betType} count matches or exceeds actual count. Crediting winnings.`);
+        // Implement your logic to credit the winnings to the user
+        // Example: userBalance += totalWinnings;
+    } else {
+        // User loses. Close bets and reset.
+        console.log(`User's ${betType} count is less than actual count. Closing bets.`);
+        // Implement your logic to close bets and reset user counts
+        // Example: userBetCounts[betType] = 0;
+    }
+}
+
+
 
         // Add this function call to your form's submit event
         document.querySelector('form').addEventListener('submit', function(event) {
