@@ -135,6 +135,24 @@ function adjustedOdds(odds, count) {
     // Place the bet (your existing function)
     placeBet(betAmount);
 
+    // Display the bets
+    const betsContainer = document.getElementById('betsContainer'); // Make sure you have a div with this id in your HTML
+    if (whiteboardChecked && whiteboardCount > 0) {
+        const betDetail = document.createElement('p');
+        betDetail.textContent = `Bet on Whiteboard: ${whiteboardCount} times, Stake: $${betAmount}`;
+        betsContainer.appendChild(betDetail);
+    }
+    if (classroomChecked && classroomCount > 0) {
+        const betDetail = document.createElement('p');
+        betDetail.textContent = `Bet on Classroom: ${classroomCount} times, Stake: $${betAmount}`;
+        betsContainer.appendChild(betDetail);
+    }
+    if (talkChecked && talkCount > 0) {
+        const betDetail = document.createElement('p');
+        betDetail.textContent = `Bet on Talk: ${talkCount} times, Stake: $${betAmount}`;
+        betsContainer.appendChild(betDetail);
+    }
+});
 
             
               // Import the functions you need from the SDKs you need
