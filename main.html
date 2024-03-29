@@ -251,22 +251,6 @@ async function placeBet(betAmount) {
 
           
 
-// Define an update function for each bet
-function updateWhiteboardBets(count) {
-    // Update the displayed number of "whiteboard" bets
-    // Implementation depends on your website setup
-}
-
-function updateClassroomBets(count) {
-    // Update the displayed number of "classroom" bets
-    // Implementation depends on your website setup
-}
-
-function updateTalkBets(count) {
-    // Update the displayed number of "talk" bets
-    // Implementation depends on your website setup
-}
-
           //this will see if the event is finished
 async function createFinishedDocument() {
     // Get a reference to the document
@@ -346,6 +330,39 @@ setupBetListener("whiteboard", updateWhiteboardBets);
 setupBetListener("classroom", updateClassroomBets);
 setupBetListener("talk", updateTalkBets);
 
+// Assuming you have already set up Firestore and authenticated the user
+
+// Reference to the "bets" collection
+const betsCollectionRef = collection(db, 'bets');
+
+// Retrieve the actual bet counts
+async function getActualBetCounts() {
+    try {
+        const querySnapshot = await getDocs(betsCollectionRef);
+        const actualCounts = {};
+
+        querySnapshot.forEach((doc) => {
+            const betType = doc.id; // Bet type (e.g., "whiteboard," "classroom," "talk")
+            const actualCount = doc.data().count; // Actual bet count
+
+            actualCounts[betType] = actualCount;
+        });
+
+        return actualCounts;
+    } catch (error) {
+        console.error('Error fetching actual bet counts:', error);
+        return null;
+    }
+}
+
+// Example usage
+const actualBetCounts = await getActualBetCounts();
+if (actualBetCounts) {
+    console.log('Actual bet counts:', actualBetCounts);
+    // Now you can compare these counts with the user's bet counts
+} else {
+    console.log('Failed to fetch actual bet counts.');
+}
 
 
           
