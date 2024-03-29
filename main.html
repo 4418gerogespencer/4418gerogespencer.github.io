@@ -66,11 +66,19 @@
     </form>
 
     <script>
-       // Event listeners for calculating winnings
-document.getElementById("whiteboardCount").addEventListener("input", updateBetSummary);
-document.getElementById("classroomCount").addEventListener("input", updateBetSummary);
-document.getElementById("talkCount").addEventListener("input", updateBetSummary);
-document.getElementById("betAmount").addEventListener("input", updateBetSummary);
+      // Array to keep track of all bets placed
+let betsPlaced = [];
+
+// Function to display all bets placed
+function displayBetsPlaced() {
+    const betsContainer = document.getElementById('betsPlaced');
+    betsContainer.innerHTML = ''; // Clear the previous list
+    betsPlaced.forEach((bet, index) => {
+        const betElement = document.createElement('p');
+        betElement.textContent = `Bet ${index + 1}: ${bet.description} - Stake: $${bet.stake} - Potential Winnings: $${bet.potentialWinnings}`;
+        betsContainer.appendChild(betElement);
+    });
+}
 
 // Function to update the bet summary
 function updateBetSummary() {
@@ -121,6 +129,11 @@ let betCount = 0;
 document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent the default form submission
 
+    const whiteboardCount = parseInt(document.getElementById("whiteboardCount").value) || 0;
+    const classroomCount = parseInt(document.getElementById("classroomCount").value) || 0;
+    const talkCount = parseInt(document.getElementById("talkCount").value) || 0;
+    const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+
     // Increment the bet count and check if the maximum number of bets is reached
     betCount++;
     if (betCount > 5) {
@@ -129,15 +142,98 @@ document.querySelector('form').addEventListener('submit', function(event) {
         return;
     }
 
-    const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
-    placeBet(betAmount).then(() => {
-        // Call updateBetSummary only after the bet has been successfully placed
-        updateBetSummary();
-    }).catch((error) => {
-        console.error('Failed to place bet:', error);
-        betCount--; // Decrement the bet count if the bet was not successfully placed
-    });
+    // Place the bet and update the bet summary
+    placeBet(betAmount, whiteboardCount, classroomCount, talkCount);
 });
+
+// Function to place a bet and update the user's balance
+async function placeBet(betAmount, whiteboardCount, classroomCount, talkCount) {
+    console.log('Attempting to place a bet...'); // Log attempt to place a bet
+
+    const userId = auth.currentUser ? auth.currentUser.uid : null; // Get the current user's ID
+    console.log('Current User ID:', userId); // Log the current user's ID
+
+    if (!userId) {
+        console.error('No user logged in. Cannot place a bet.');
+        return;
+    }
+
+    // Reference to the user's document
+    const userRef = doc(db, 'users', userId);
+    console.log('User document reference:', userRef); // Log the user document reference
+
+    try {
+        console.log('Starting transaction...'); // Log the start of the transaction
+        await runTransaction(db, async (transaction) => {
+            console.log('Inside transaction...'); // Log inside the transaction
+
+            const userDoc = await transaction.get(userRef);
+            console.log('Retrieved user document:', userDoc.exists()); // Log if the user document exists
+
+            if (!userDoc.exists()) {
+                throw new Error("User does not exist!");
+            }
+
+            const userData = userDoc.data();
+            console.log('Current balance:', userData.balance); // Log the current balance
+
+            if (userData.balance < betAmount) {
+                throw new Error("Insufficient funds!");
+            }
+
+            // Deduct the bet amount from the user's balance
+            const newBalance = userData.balance - betAmount;
+            console.log('New balance after bet:', newBalance); // Log the new balance
+
+            // Update the user's balance in the transaction
+            transaction.update(userRef, { balance: newBalance });
+            console.log('Updated user balance in transaction.'); // Log the balance update
+
+            // After placing the bet, add it to the betsPlaced array
+            const betDescription = formatSelectedBets(whiteboardCount, classroomCount, talkCount);
+            const whiteboardOdds = 9 / 8;
+            const classroomOdds = 3 / 2;
+            const talkOdds = 100 / 99;
+            const combinedOdds = calculateCombinedOdds(whiteboardOdds, whiteboardCount, classroomOdds, classroomCount, talkOdds, talkCount);
+            const potentialWinnings = betAmount * combinedOdds;
+
+            betsPlaced.push({
+                description: betDescription,
+                stake: betAmount,
+                potentialWinnings: potentialWinnings.toFixed(2)
+            });
+
+            // Update the display of bets placed
+            displayBetsPlaced();
+        });
+        console.log('Transaction completed successfully.'); // Log the successful completion of the transaction
+    } catch (error) {
+        console.error('Failed to place bet:', error); // Log any errors encountered
+        betCount--; // Decrement the bet count if the bet was not successfully placed
+    }
+}
+
+
+    // After placing the bet, add it to the betsPlaced array
+    const betDescription = formatSelectedBets(whiteboardCount, classroomCount, talkCount);
+    const combinedOdds = calculateCombinedOdds(whiteboardOdds, whiteboardCount, classroomOdds, classroomCount, talkOdds, talkCount);
+    const potentialWinnings = betAmount * combinedOdds;
+
+    betsPlaced.push({
+        description: betDescription,
+        stake: betAmount,
+        potentialWinnings: potentialWinnings.toFixed(2)
+    });
+
+    // Update the display of bets placed
+    displayBetsPlaced();
+}
+
+// Event listeners for calculating winnings
+document.getElementById("whiteboardCount").addEventListener("input", updateBetSummary);
+document.getElementById("classroomCount").addEventListener("input", updateBetSummary);
+document.getElementById("talkCount").addEventListener("input", updateBetSummary);
+document.getElementById("betAmount").addEventListener("input", updateBetSummary);
 
 
       </script>
