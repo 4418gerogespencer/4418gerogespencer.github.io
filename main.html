@@ -128,24 +128,26 @@
     combinedOddsDenominator /= divisor;
 
     // Construct the bet details string
-    const bets = [];
-    if (whiteboardChecked && whiteboardCount > 0) {
-        bets.push(`Bet on Whiteboard: ${whiteboardCount}X`);
-    }
-    if (classroomChecked && classroomCount > 0) {
-        bets.push(`Bet on Classroom: ${classroomCount}X`);
-    }
-    if (talkChecked && talkCount > 0) {
-        bets.push(`Bet on Talk: ${talkCount}X`);
-    }
-    const betDetailsText = `Placed bets on: ${bets.join(', ')}; Stake: $${betAmount}; Combined Odds: ${combinedOddsNumerator}/${combinedOddsDenominator}`;
+    // Construct the bet details string
+const bets = [];
+if (whiteboardChecked && whiteboardCount > 0) {
+    bets.push(`Bet on Whiteboard: ${whiteboardCount}X`);
+}
+if (classroomChecked && classroomCount > 0) {
+    bets.push(`Bet on Classroom: ${classroomCount}X`);
+}
+if (talkChecked && talkCount > 0) {
+    bets.push(`Bet on Talk: ${talkCount}X`);
+}
+const betDetailsText = `Placed bets: ${bets.join(', ')}; Stake: $${betAmount}; Odds: ${combinedOddsNumerator}/${combinedOddsDenominator}`;
 
-    // Display the bet details
-    const betsContainer = document.getElementById('betsContainer');
-    betsContainer.innerHTML = ''; // Clear previous bets
-    const betDetail = document.createElement('p');
-    betDetail.textContent = betDetailsText;
-    betsContainer.appendChild(betDetail);
+// Display the bet details
+const betsContainer = document.getElementById('betsContainer');
+betsContainer.innerHTML = ''; // Clear previous bets
+const betDetail = document.createElement('p');
+betDetail.textContent = betDetailsText;
+betsContainer.appendChild(betDetail);
+
 
     // Place the bet (your existing function)
     placeBet(betAmount);
