@@ -189,28 +189,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const user = auth.currentUser;
-
-if (user) {
-    const userRef = doc(db, 'users', user.uid); // Reference to the user document
-
-    // Create the user document (if it doesn't exist)
-    try {
-        await setDoc(userRef, {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            balance: 0 // Initial balance (customize as needed)
-        });
-        console.log('User document created successfully.');
-    } catch (error) {
-        console.error('Error creating user document:', error);
-    }
-}
-
-
-
-
 
 
        // Function to place a bet and update the user's balance
@@ -273,7 +251,7 @@ async function placeBet(betAmount) {
 
           
 
-// This will see if the event is finished
+          //this will see if the event is finished
 async function createFinishedDocument() {
     // Get a reference to the document
     const docRef = doc(db, "finished", "yourDocumentId");
@@ -292,8 +270,8 @@ createFinishedDocument();
 
 // Assuming you have already set up Firestore and authenticated the user
 
-// Reference to the "finished" document
-const finishedDocumentRef = doc(db, 'finished', 'yourDocumentId');
+// Reference to the "finisheddocument" document
+const finishedDocumentRef = doc(db, 'finisheddocument', 'yourDocumentId');
 
 // Set the default value (event ongoing) if the document doesn't exist
 try {
@@ -303,7 +281,7 @@ try {
     console.error('Error creating document:', error);
 }
 
-// Listen for real-time updates to the "finished" document
+// Listen for real-time updates to the "finisheddocument"
 onSnapshot(finishedDocumentRef, (doc) => {
     if (doc.exists) {
         const eventState = doc.data().value;
@@ -317,12 +295,11 @@ onSnapshot(finishedDocumentRef, (doc) => {
             // You can enable the form submission, update UI, etc.
         }
     } else {
-        console.log('No such document for "finished".');
+        console.log('No such document for "finisheddocument".');
     }
 }, (error) => {
-    console.error('Error fetching "finished":', error);
+    console.error('Error fetching "finisheddocument":', error);
 });
-
 
 
 // Define a setup function for each bet
@@ -386,7 +363,7 @@ if (actualBetCounts) {
 
           
           function displayAndUpdateBalance() {
-
+  const user = auth.currentUser;
   if (user) {
     const userRef = doc(db, 'users', user.uid);
     
@@ -405,8 +382,6 @@ if (actualBetCounts) {
 }
 
 
-// Function to get user bet counts
-// Function to get user bet counts
 function getUserBetCounts() {
     // Get the bet counts from the form inputs
     const whiteboardCount = parseInt(document.getElementById('whiteboardCount').value) || 0;
@@ -421,40 +396,44 @@ function getUserBetCounts() {
     };
 }
 
-// Form submit event listener
 document.querySelector('form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+            event.preventDefault(); // Prevent the default form submission
 
-    // Get the user bet counts
-    const userBetCounts = getUserBetCounts();
-    console.log('User bet counts:', userBetCounts);
+            // Get the user bet counts
+            const userBetCounts = getUserBetCounts();
+            console.log('User bet counts:', userBetCounts);
 
-    // Assuming you have retrieved actualBetCounts and userBetCounts
-    for (const betType in actualBetCounts) {
-        const actualCount = actualBetCounts[betType];
-        const userCount = userBetCounts[betType];
-        let totalWinnings; // You'll need to define this variable
 
-        if (userCount >= actualCount) {
-            // User wins! Credit the winnings.
-            console.log(`User's ${betType} count matches or exceeds actual count. Crediting winnings.`);
-            // Implement your logic to credit the winnings to the user
-            // Example: userBalance += totalWinnings;
-        } else {
-            // User loses. Close bets and reset.
-            console.log(`User's ${betType} count is less than actual count. Closing bets.`);
-            // Implement your logic to close bets and reset user counts
-            // Example: userBetCounts[betType] = 0;
-        }
+
+// Assuming you have retrieved actualBetCounts and userBetCounts
+for (const betType in actualBetCounts) {
+    const actualCount = actualBetCounts[betType];
+    const userCount = userBetCounts[betType];
+    const totalWinnings = totalWinnings; // You'll need to define this variable
+
+    if (userCount >= actualCount) {
+        // User wins! Credit the winnings.
+        console.log(`User's ${betType} count matches or exceeds actual count. Crediting winnings.`);
+        // Implement your logic to credit the winnings to the user
+        // Example: userBalance += totalWinnings;
+    } else {
+        // User loses. Close bets and reset.
+        console.log(`User's ${betType} count is less than actual count. Closing bets.`);
+        // Implement your logic to close bets and reset user counts
+        // Example: userBetCounts[betType] = 0;
     }
-
-    // Get the bet amount
-    const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
-    placeBet(betAmount);
-});
+}
 
 
-     </script>
+
+
+        // Add this function call to your form's submit event
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+            placeBet(betAmount);
+        });
+</script>
 </head>
 <body>
       </html>
