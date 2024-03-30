@@ -189,6 +189,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const user = auth.currentUser;
+
+if (user) {
+    const userRef = doc(db, 'users', user.uid); // Reference to the user document
+
+    // Create the user document (if it doesn't exist)
+    try {
+        await setDoc(userRef, {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            balance: 0 // Initial balance (customize as needed)
+        });
+        console.log('User document created successfully.');
+    } catch (error) {
+        console.error('Error creating user document:', error);
+    }
+}
+
+
+
+
 
 
        // Function to place a bet and update the user's balance
@@ -364,7 +386,7 @@ if (actualBetCounts) {
 
           
           function displayAndUpdateBalance() {
-  const user = auth.currentUser;
+
   if (user) {
     const userRef = doc(db, 'users', user.uid);
     
