@@ -251,7 +251,7 @@ async function placeBet(betAmount) {
 
           
 
-          //this will see if the event is finished
+// This will see if the event is finished
 async function createFinishedDocument() {
     // Get a reference to the document
     const docRef = doc(db, "finished", "yourDocumentId");
@@ -270,8 +270,8 @@ createFinishedDocument();
 
 // Assuming you have already set up Firestore and authenticated the user
 
-// Reference to the "finisheddocument" document
-const finishedDocumentRef = doc(db, 'finisheddocument', 'yourDocumentId');
+// Reference to the "finished" document
+const finishedDocumentRef = doc(db, 'finished', 'yourDocumentId');
 
 // Set the default value (event ongoing) if the document doesn't exist
 try {
@@ -281,7 +281,7 @@ try {
     console.error('Error creating document:', error);
 }
 
-// Listen for real-time updates to the "finisheddocument"
+// Listen for real-time updates to the "finished" document
 onSnapshot(finishedDocumentRef, (doc) => {
     if (doc.exists) {
         const eventState = doc.data().value;
@@ -295,11 +295,12 @@ onSnapshot(finishedDocumentRef, (doc) => {
             // You can enable the form submission, update UI, etc.
         }
     } else {
-        console.log('No such document for "finisheddocument".');
+        console.log('No such document for "finished".');
     }
 }, (error) => {
-    console.error('Error fetching "finisheddocument":', error);
+    console.error('Error fetching "finished":', error);
 });
+
 
 
 // Define a setup function for each bet
