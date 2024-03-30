@@ -382,6 +382,7 @@ if (actualBetCounts) {
 }
 
 
+// Function to get user bet counts
 function getUserBetCounts() {
     // Get the bet counts from the form inputs
     const whiteboardCount = parseInt(document.getElementById('whiteboardCount').value) || 0;
@@ -396,44 +397,85 @@ function getUserBetCounts() {
     };
 }
 
+// Form submit event listener
 document.querySelector('form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
+    event.preventDefault(); // Prevent the default form submission
 
-            // Get the user bet counts
-            const userBetCounts = getUserBetCounts();
-            console.log('User bet counts:', userBetCounts);
+    // Get the user bet counts
+    const userBetCounts = getUserBetCounts();
+    console.log('User bet counts:', userBetCounts);
 
+    // Assuming you have retrieved actualBetCounts and userBetCounts
+    for (const betType in actualBetCounts) {
+        const actualCount = actualBetCounts[betType];
+        const userCount = userBetCounts[betType];
+        let totalWinnings; // You'll need to define this variable
 
-
-// Assuming you have retrieved actualBetCounts and userBetCounts
-for (const betType in actualBetCounts) {
-    const actualCount = actualBetCounts[betType];
-    const userCount = userBetCounts[betType];
-    const totalWinnings = totalWinnings; // You'll need to define this variable
-
-    if (userCount >= actualCount) {
-        // User wins! Credit the winnings.
-        console.log(`User's ${betType} count matches or exceeds actual count. Crediting winnings.`);
-        // Implement your logic to credit the winnings to the user
-        // Example: userBalance += totalWinnings;
-    } else {
-        // User loses. Close bets and reset.
-        console.log(`User's ${betType} count is less than actual count. Closing bets.`);
-        // Implement your logic to close bets and reset user counts
-        // Example: userBetCounts[betType] = 0;
+        if (userCount >= actualCount) {
+            // User wins! Credit the winnings.
+            console.log(`User's ${betType} count matches or exceeds actual count. Crediting winnings.`);
+            // Implement your logic to credit the winnings to the user
+            // Example: userBalance += totalWinnings;
+        } else {
+            // User loses. Close bets and reset.
+            console.log(`User's ${betType} count is less than actual count. Closing bets.`);
+            // Implement your logic to close bets and reset user counts
+            // Example: userBetCounts[betType] = 0;
+        }
     }
+
+    // Get the bet amount
+    const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+    placeBet(betAmount);
+});
+// Function to get user bet counts
+function getUserBetCounts() {
+    // Get the bet counts from the form inputs
+    const whiteboardCount = parseInt(document.getElementById('whiteboardCount').value) || 0;
+    const classroomCount = parseInt(document.getElementById('classroomCount').value) || 0;
+    const talkCount = parseInt(document.getElementById('talkCount').value) || 0;
+
+    // Return the bet counts as an object
+    return {
+        whiteboard: whiteboardCount,
+        classroom: classroomCount,
+        talk: talkCount
+    };
 }
 
+// Form submit event listener
+document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
+    // Get the user bet counts
+    const userBetCounts = getUserBetCounts();
+    console.log('User bet counts:', userBetCounts);
 
+    // Assuming you have retrieved actualBetCounts and userBetCounts
+    for (const betType in actualBetCounts) {
+        const actualCount = actualBetCounts[betType];
+        const userCount = userBetCounts[betType];
+        let totalWinnings; // You'll need to define this variable
 
-        // Add this function call to your form's submit event
-        document.querySelector('form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
-            placeBet(betAmount);
-        });
-</script>
+        if (userCount >= actualCount) {
+            // User wins! Credit the winnings.
+            console.log(`User's ${betType} count matches or exceeds actual count. Crediting winnings.`);
+            // Implement your logic to credit the winnings to the user
+            // Example: userBalance += totalWinnings;
+        } else {
+            // User loses. Close bets and reset.
+            console.log(`User's ${betType} count is less than actual count. Closing bets.`);
+            // Implement your logic to close bets and reset user counts
+            // Example: userBetCounts[betType] = 0;
+        }
+    }
+
+    // Get the bet amount
+    const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+    placeBet(betAmount);
+});
+
+     </script>
 </head>
 <body>
       </html>
