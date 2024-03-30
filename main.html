@@ -454,6 +454,24 @@ document.querySelector('form').addEventListener('submit', function(event) {
     placeBet(betAmount);
 });
 
+   document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Get the user bet counts
+    const userBetCounts = getUserBetCounts();
+    console.log('User bet counts:', userBetCounts);
+
+    // Assuming you have retrieved actualBetCounts and userBetCounts
+    for (const betType in actualBetCounts) {
+        // Check user's bet counts against actual counts and process bets accordingly
+    }
+
+    // Get the bet amount
+    const betAmount = parseFloat(document.getElementById('betAmount').value) || 0;
+    placeBet(betAmount); // This is where the bet is placed
+});
+
+
 
      </script>
 </head>
