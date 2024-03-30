@@ -164,58 +164,12 @@ betsContainer.appendChild(betDetail);
 
             
               // Import the functions you need from the SDKs you need
-
+              // Import the functions you need from the SDKs you need
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
-import { onSnapshot } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-
-import { doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
-
-// Define an update function for each bet
-function updateWhiteboardBets(count) {
-    // Update the displayed number of "whiteboard" bets
-    // Implementation depends on your website setup
-}
-
-function updateClassroomBets(count) {
-    // Update the displayed number of "classroom" bets
-    // Implementation depends on your website setup
-}
-
-function updateTalkBets(count) {
-    // Update the displayed number of "talk" bets
-    // Implementation depends on your website setup
-}
-
-// Define a setup function for each bet
-function setupBetListener(betName, updateFunction) {
-    // Get a reference to the document
-    const docRef = doc(db, "bets", betName);
-
-    // Listen for real-time updates
-    onSnapshot(docRef, (doc) => {
-        let betCount;
-        if (doc.exists()) {
-            // Update the displayed bet with the new data
-            betCount = doc.data().count;
-        } else {
-            console.log(`No such document for ${betName}! Setting default value.`);
-            betCount = 0;
-            // Set the default value in Firestore
-            setDoc(docRef, { count: betCount });
-        }
-        updateFunction(betCount);
-    }, (error) => {
-        console.log(`Failed to fetch document for ${betName}:`, error);
-    });
-}
-
-// Set up listeners for all bets
-setupBetListener("whiteboard", updateWhiteboardBets);
-setupBetListener("classroom", updateClassroomBets);
-setupBetListener("talk", updateTalkBets);
-
+          import { onSnapshot } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
 
           
